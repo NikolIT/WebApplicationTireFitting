@@ -1,0 +1,47 @@
+﻿@model IEnumerable<WebApplicationTireFitting.Models.Material>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Матеріали</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-secondary">Додати матеріал</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Фото")
+            </th>
+            <th>
+                @Html.DisplayName("Назва")
+            </th>
+            <th>
+                @Html.DisplayName("Вартість")
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <img src="@Url.Content(item.PathMaterialsImg)" alt="Avatar" class="avatar">
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NameMaterial)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdMaterials" class="btn btn-outline-primary">Редагувати</a>
+                <a asp-action="Details" asp-route-id="@item.IdMaterials" class="btn btn-outline-secondary">Детальніше</a>
+                <a asp-action="Delete" asp-route-id="@item.IdMaterials" class="btn btn-outline-danger">Видалити</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

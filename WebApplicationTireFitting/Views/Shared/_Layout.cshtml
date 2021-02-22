@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - WebApplicationTireFitting</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+
+    @* kendo *@
+    <link href="https://kendo.cdn.telerik.com/2021.1.119/styles/kendo.bootstrap-v4.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://kendo.cdn.telerik.com/2021.1.119/js/jquery.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2021.1.119/js/kendo.all.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2021.1.119/js/kendo.aspnetmvc.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.3.913/js/pako_deflate.min.js"></script>
+    @* kendo *@
+    @* для експорту зображень *@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"
+            integrity="sha256-c9vxcXyAG4paArQG3xk6DjyW/9aHxai2ef9RpMWO44A=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
+    @* для експорту зображень *@
+    @* для роботи графіків*@
+    <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+    @* для роботи графіків*@
+
+    <script src="~/js/maskinput.js"></script>
+
+</head>
+<body>
+   
+
+    <div class="topnav" id="myTopnav">
+        <a class="active" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+        <a asp-area="" asp-controller="Orders" asp-action="Index">Замовлення</a>
+        <a asp-area="" asp-controller="Clients" asp-action="Index">Клієнти</a>
+        <a asp-area="" asp-controller="Cars" asp-action="Index">Транппортний засіб</a>
+        <a asp-area="" asp-controller="Workers" asp-action="Index">Працівники</a>
+        <a asp-area="" asp-controller="Positions" asp-action="Index">Посади</a>
+        <a asp-area="" asp-controller="Materials" asp-action="Index">Матеріали</a>
+        <a asp-area="" asp-controller="TypeOfCars" asp-action="Index">Види транспорту</a>
+        <a asp-area="" asp-controller="Services" asp-action="Index">Послуги</a>
+        <a asp-area="" asp-controller="Report" asp-action="Index">Звіти</a>
+    </div>
+   
+    <div class="container">
+        <main role="main" class="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="footer"></footer>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

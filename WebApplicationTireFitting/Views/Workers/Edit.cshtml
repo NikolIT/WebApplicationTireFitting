@@ -1,0 +1,67 @@
+﻿@model WebApplicationTireFitting.Models.Worker
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Редагування</h1>
+
+<h4>Працівник</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdWorker" />
+            <input type="hidden" name="PathWorkerImg" value="@Model.PathWorkerImg">
+            <div class="form-group">
+                <img src="@Url.Content(Model.PathWorkerImg)" alt="avatarFull" class="avatarFull">
+            </div>
+            <div class="form-group">
+                <label class="control-label">Посада</label>
+                <select asp-for="IdPosition" class="form-control" asp-items="ViewBag.IdPosition"></select>
+                <span asp-validation-for="IdPosition" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">ПІБ</label>
+                <input asp-for="FullName" class="form-control"  maxlength="50"/>
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Номер телефону</label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Адресса проживання</label>
+                <input asp-for="Address" class="form-control"  maxlength="200"/>
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Ставка</label>
+                <input asp-for="Rate" class="form-control" />
+                <span asp-validation-for="Rate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label  class="control-label">Дата народження</label>
+                <input asp-for="DateOfBirth" class="form-control" />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Фото</label>
+                <input type="file" name="uploadedFile" accept=".jpg, .jpeg, .png" /><br>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Зберегти" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

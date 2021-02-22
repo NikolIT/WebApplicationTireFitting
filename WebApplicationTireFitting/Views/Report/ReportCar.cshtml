@@ -1,0 +1,258 @@
+﻿@model IEnumerable<WebApplicationTireFitting.Controllers.ReportCar>;
+
+<div class="box wide hidden-on-narrow">
+    <div class="box-col">
+        <button id="downloadPDF" class='export-pdf k-button'>Завантажити графік у PDF</button>
+    </div>
+</div>
+
+<div id="content">
+    <h4>Звіт по транпорним засобам за @ViewBag.Date</h4>
+    <h4>Графік: автомобілі, ремонт</h4>
+    <div id="chartdiv"></div>
+</div>
+
+<button type="button" class="k-button" id="printGrid">Друкувати таблицю</button>
+
+@(Html.Kendo().Grid(Model)
+        .Name("Grid")
+        .ToolBar(tools => { tools.Pdf().Text("Завантажити у PDF"); })
+        .Pdf(pdf => pdf
+                .AllPages()
+                .AvoidLinks()
+                .PaperSize("A4")
+                .Margin("2cm", "1cm", "1cm", "1cm")
+                .Landscape()
+                .RepeatHeaders()
+                .TemplateId("page-template")
+                .FileName("ReportCar.pdf")
+        )
+        .Columns(columns =>
+        {
+        columns.Bound(p => p.pathCarImg).ClientTemplate(
+          @"<img src='#: pathCarImg #' alt='avatar' class='avatar' style = 'width: 100px; height: 100px;object-fit: cover;'>")
+              .Width(240).Title("Фото");
+        columns.Bound(p => p.name).Title("Назва авто");
+        columns.Bound(p => p.fullName).Title("Власник");
+        columns.Bound(p => p.orderCount).Title("Кількість замовлень на це авто");
+    }).HtmlAttributes(new { style = "height: 550px;" })
+            .Scrollable()
+            .Groupable()
+            .Scrollable(scr => scr.Height(430))
+            .Filterable()
+            .Pageable(pageable => pageable
+                .Refresh(true)
+                .PageSizes(true)
+                .ButtonCount(5))
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .PageSize(20)
+                .ServerOperation(false)
+            )
+)
+<a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+
+<script type="x/kendo-template" id="page-template">
+    <div class="page-template">
+        <div class="header">
+            <div style="float: left">Звіт по транпорним засобам</div>
+            <div style="float: right">Date: @ViewBag.Date  Page #: pageNum # of #: totalPages #</div>
+        </div>
+        <div class="footer" style = "background-color:white;">
+            Page #: pageNum # of #: totalPages #
+        </div>
+    </div>
+</script>
+
+
+<script>
+    am4core.ready(function () {
+
+        am4core.useTheme(am4themes_animated);
+        var chart = am4core.create("chartdiv", am4charts.PieChart);
+
+        // Add data
+        chart.data = [
+            @{
+                foreach (var item in Model)
+                {
+                    <text>
+                        {
+                            "name": "@item.name",
+                            "orderCount": @item.orderCount
+                        },
+                    </text>
+                }
+            }
+
+        ];
+
+        // Set inner radius
+        chart.innerRadius = am4core.percent(50);
+
+        // Add and configure Series
+        var pieSeries = chart.series.push(new am4charts.PieSeries());
+        pieSeries.dataFields.value = "orderCount";
+        pieSeries.dataFields.category = "name";
+        pieSeries.slices.template.stroke = am4core.color("#fff");
+        pieSeries.slices.template.strokeWidth = 2;
+        pieSeries.slices.template.strokeOpacity = 1;
+
+        // This creates initial animation
+        pieSeries.hiddenState.properties.opacity = 1;
+        pieSeries.hiddenState.properties.endAngle = -90;
+        pieSeries.hiddenState.properties.startAngle = -90;
+
+    }); // end am4core.ready()
+    kendo.pdf.defineFont({
+        "DejaVu Sans": "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans.ttf",
+        "DejaVu Sans|Bold": "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Bold.ttf",
+        "DejaVu Sans|Bold|Italic": "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Oblique.ttf",
+        "DejaVu Sans|Italic": "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Oblique.ttf",
+        "WebComponentsIcons": "https://kendo.cdn.telerik.com/2017.1.223/styles/fonts/glyphs/WebComponentsIcons.ttf"
+    });
+
+    function printGrid() {
+        var gridElement =
+            printableContent = `
+            <thead>
+				<tr>
+                    <th></th>
+                    <th>Назва авто</th>
+                    <th>Власник</th>
+                    <th>Кількість замовлень на це авто</th>
+				</tr>
+			</thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+
+					<td><img src=' @Html.DisplayFor(modelItem => item.pathCarImg) ' alt='avatar' class='avatar'></td>
+                    <td>@Html.DisplayFor(modelItem => item.name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.fullName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.orderCount)</td>
+				</tr>
+            }`,
+            win = window.open('', '', 'width=800, height=500, resizable=1, scrollbars=1'),
+            doc = win.document.open();
+
+
+        var htmlStart =
+            `
+            <!DOCTYPE html>
+            <html>
+	            <head>
+		        <meta charset="utf-8">
+<style>
+    body {
+        margin: 20px;
+        padding: 0;
+    }
+
+    table {
+        width: 100%; /*Ширина таблицы*/
+        margin-bottom: 18px; /*Отступ снизу от таблицы*/
+        padding: 0; /*Отступы внутри таблицы*/
+        font-size: 13px; /*Размер шрифта*/
+        border: 1px solid #dddddd; /*Граница таблицы*/
+        border-spacing: 0; /*Отступы между границами ячеек*/
+        border-collapse: separate; /*Границы ячеек не склеиваются*/
+        -webkit-border-radius: 5px; /*Радиус скругления углов у таблицы Safari, Chrome*/
+        -moz-border-radius: 5px; /*Радиус скругления углов у таблицы Mozilla*/
+        border-radius: 5px; /*Радиус скругления углов у таблицы*/
+        color: #666666; /*Цвет текста в таблице*/
+        font-family: Arial; /*Семейство шрифтов*/
+    }
+
+        table th, table td {
+            padding: 10px 10px 9px; /*Отступы внутри ячеек*/
+            line-height: 18px; /*Межстрочный интервал*/
+            text-align: left; /*Выравнивание текста по левому краю*/
+        }
+
+        table th {
+            padding-top: 9px; /*Отступы внутри ячеек*/
+            font-weight: bold; /*Установка жирного начертания шрифта*/
+            verticalname-align: middle; /*Выравнивание по вертикали. Текст находится по середине*/
+            color: black; /*Черный цвет в ячейках заголовков таблицы*/
+        }
+
+        table td {
+            vertical-align: top; /*Выравнивание содержимого ячейки по верхнему краю*/
+            border-top: 1px solid #ddd; /*Верхняя граница ячейки*/
+        }
+
+            table th + th, table td + td, table th + td {
+                border-left: 1px solid #ddd; /*Стиль для левой границы между двумя ячейками*/
+            }
+
+        table thead tr:first-child th:first-child, /*Первая строка первая ячейка в заголовке таблицы*/
+        table tbody tr:first-child td:first-child /*Первая строка первая ячейка в теле таблицы*/ {
+            -webkit-border-radius: 5px 0 0 0;
+            -moz-border-radius: 5px 0 0 0;
+            border-radius: 5px 0 0 0;
+        }
+
+        table thead tr:first-child th:last-child, /*Первая строка последняя ячейка в заголовке таблицы*/
+        table tbody tr:first-child td:last-child /*Первая строка последняя ячейка в теле таблицы*/ {
+            -webkit-border-radius: 0 5px 0 0;
+            -moz-border-radius: 0 5px 0 0;
+            border-radius: 0 5px 0 0;
+        }
+
+        table tbody tr:last-child td:first-child /*Последняя строка первая ячейка в теле таблицы*/ {
+            -webkit-border-radius: 0 0 0 5px;
+            -moz-border-radius: 0 0 0 5px;
+            border-radius: 0 0 0 5px;
+        }
+
+        table tbody tr:last-child td:last-child /*Последняя строка последняя ячейка в теле таблицы*/ {
+            -webkit-border-radius: 0 0 5px 0;
+            -moz-border-radius: 0 0 5px 0;
+            border-radius: 0 0 5px 0;
+        }
+
+        table tr:hover {
+            background-color: #f2f2f2; /*Цвет строки при наведении курсора мыши*/
+        }
+.avatar {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+</style>
+		            <title>Звіт</title>
+	        </head>
+	        <body>
+		        <table>
+
+            `;
+
+        var htmlEnd =
+            `
+                        </tbody>
+                    </table>
+	            </body>
+            </html>`;
+
+
+        doc.write(htmlStart + printableContent + htmlEnd);
+        doc.close();
+        win.print();
+
+    }
+    $('#printGrid').click(function () {
+        printGrid();
+    });
+
+    //скачування PDF графіку
+    $('#downloadPDF').click(function () {
+        domtoimage.toPng(document.getElementById('content'))
+            .then(function (blob) {
+                var pdf = new jsPDF('l', 'pt', [$('#content').width(), $('#content').height()]);
+                pdf.addImage(blob, 'PNG', 0, 0, $('#content').width(), $('#content').height());
+                pdf.save("ReportCar.pdf");
+            });
+    });
+</script>

@@ -1,0 +1,42 @@
+﻿@model WebApplicationTireFitting.Models.Car
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Деталі транспорту</h1>
+
+<div>
+    <img src="@Url.Content(Model.PathCarImg)" alt="avatarFull" class="avatarFull">
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayName("Назва")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Власник")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Owner)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Клієнт")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdClientNavigation.FullName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Вид транспорту")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdTypeOfCarNavigation.TypeOfCar1)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.IdCar" class="btn btn-outline-primary">Редагувати</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+</div>

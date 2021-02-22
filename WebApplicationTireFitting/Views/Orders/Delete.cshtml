@@ -1,0 +1,91 @@
+﻿@model WebApplicationTireFitting.Models.Order
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Видалення</h1>
+
+<h3>Ви впевнені, що хочете видалити це замовлення?</h3>
+<div>
+    <h4>Order</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayName("Дата")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Вартість")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Транспорт")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdCarNavigation.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Клієнт")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdClientNavigation.FullName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Матеріали:")
+        </dt>
+        <dd class="col-sm-10">
+            <div class="prokrutka">
+                @{
+                    foreach (var item in ViewBag.Materials[0].MaterialsOrders)
+                    {
+                        <div>
+                            <a asp-controller="Personages" asp-action="Details" asp-route-id="@item.IdMaterialsNavigation.IdMaterials">@item.IdMaterialsNavigation.NameMaterial</a>
+                        </div>
+                    }
+                }
+            </div>
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Працівники:")
+        </dt>
+        <dd class="col-sm-10">
+            <div class="prokrutka">
+                @{
+                    foreach (var item in ViewBag.Workers[0].OrderWorkers)
+                    {
+                        <div>
+                            <a asp-controller="Personages" asp-action="Details" asp-route-id="@item.IdWorkerNavigation.IdWorker">@item.IdWorkerNavigation.FullName</a>
+                        </div>
+                    }
+                }
+            </div>
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Послуги:")
+        </dt>
+        <dd class="col-sm-10">
+            <div class="prokrutka">
+                @{
+                    foreach (var item in ViewBag.Services[0].ServiceOrders)
+                    {
+                        <div>
+                            <a asp-controller="Personages" asp-action="Details" asp-route-id="@item.IdServiceNavigation.IdService">@item.IdServiceNavigation.ServiceName</a>
+                        </div>
+                    }
+                }
+            </div>
+        </dd>
+    </dl>
+    
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="IdOrder" />
+        <input type="submit" value="Видалити" class="btn btn-danger" /> 
+        <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+    </form>
+</div>

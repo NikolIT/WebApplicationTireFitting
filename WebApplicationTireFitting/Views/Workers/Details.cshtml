@@ -1,0 +1,54 @@
+﻿@model WebApplicationTireFitting.Models.Worker
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Детальніше про працівника</h1>
+
+<div>
+    <img src="@Url.Content(Model.PathWorkerImg)" alt="avatarFull" class="avatarFull">
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayName("ПІБ")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FullName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Номер телефону")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Адресса проживання")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Ставка")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Rate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("ДАта народження")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateOfBirth)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Посада")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdPositionNavigation.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.IdWorker" class="btn btn-outline-primary">Редагувати</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+</div>

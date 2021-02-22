@@ -1,0 +1,110 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\nikol\\Desktop\\Резюме\\WebApplicationTireFitting\\WebApplicationTireFitting\\WebApplicationTireFitting.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\nikol\\Desktop\\Резюме\\WebApplicationTireFitting\\WebApplicationTireFitting\\WebApplicationTireFitting.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\nikol\\Desktop\\Резюме\\WebApplicationTireFitting\\WebApplicationTireFitting\\WebApplicationTireFitting.csproj",
+        "projectName": "WebApplicationTireFitting",
+        "projectPath": "C:\\Users\\nikol\\Desktop\\Резюме\\WebApplicationTireFitting\\WebApplicationTireFitting\\WebApplicationTireFitting.csproj",
+        "packagesPath": "C:\\Users\\nikol\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\nikol\\Desktop\\Резюме\\WebApplicationTireFitting\\WebApplicationTireFitting\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\nikol\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.telerik.com/nuget": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[3.1.11, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[3.1.11, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.1.11, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
+            "Telerik.Core.Export.Trial": {
+              "target": "Package",
+              "version": "[2021.1.119, )"
+            },
+            "Telerik.DataSource.Trial": {
+              "target": "Package",
+              "version": "[2.0.7, )"
+            },
+            "Telerik.Documents.Core.Trial": {
+              "target": "Package",
+              "version": "[2021.1.118, )"
+            },
+            "Telerik.Documents.Spreadsheet.FormatProviders.Xls.Trial": {
+              "target": "Package",
+              "version": "[2021.1.118, )"
+            },
+            "Telerik.UI.for.AspNet.Core.Trial": {
+              "target": "Package",
+              "version": "[2021.1.119, )"
+            },
+            "Telerik.Web.PDF.Trial": {
+              "target": "Package",
+              "version": "[2021.1.119, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.103\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

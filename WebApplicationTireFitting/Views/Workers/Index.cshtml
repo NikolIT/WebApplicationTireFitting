@@ -1,0 +1,53 @@
+﻿@model IEnumerable<WebApplicationTireFitting.Models.Worker>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Працівники</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-secondary" >Додати працівника</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Фото")
+            </th>
+            <th>
+                @Html.DisplayName("ПІБ")
+            </th>
+            <th>
+                @Html.DisplayName("Номер телефону")
+            </th>
+            <th>
+                @Html.DisplayName("Посада")
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <img src="@Url.Content(item.PathWorkerImg)" alt="Avatar" class="avatar">
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdPositionNavigation.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdWorker" class="btn btn-outline-primary">Редагувати</a>
+                <a asp-action="Details" asp-route-id="@item.IdWorker" class="btn btn-outline-secondary">Детальніше</a>
+                <a asp-action="Delete" asp-route-id="@item.IdWorker" class="btn btn-outline-danger">Видалити</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

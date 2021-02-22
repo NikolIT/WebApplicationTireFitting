@@ -1,0 +1,86 @@
+﻿@model WebApplicationTireFitting.Models.Order
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Детальніше про замовлення</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayName("Дата")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Вартість")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Транспорт")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdCarNavigation.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Клієнт")
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdClientNavigation.FullName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Матеріали:")
+         </dt>
+        <dd class="col-sm-10">
+            <div class="prokrutka">
+                @{
+                    foreach (var item in ViewBag.Materials[0].MaterialsOrders)
+                    {
+                        <div>
+                            <a asp-controller="Personages" asp-action="Details" asp-route-id="@item.IdMaterialsNavigation.IdMaterials">@item.IdMaterialsNavigation.NameMaterial</a>
+                        </div>
+                    }
+                }
+            </div>
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Працівники:")
+        </dt>
+        <dd class="col-sm-10">
+            <div class="prokrutka">
+                @{
+                    foreach (var item in ViewBag.Workers[0].OrderWorkers)
+                    {
+                        <div>
+                            <a asp-controller="Personages" asp-action="Details" asp-route-id="@item.IdWorkerNavigation.IdWorker">@item.IdWorkerNavigation.FullName</a>
+                        </div>
+                    }
+                }
+            </div>
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Послуги:")
+         </dt>
+        <dd class="col-sm-10">
+            <div class="prokrutka">
+                @{
+                    foreach (var item in ViewBag.Services[0].ServiceOrders)
+                    {
+                        <div>
+                            <a asp-controller="Personages" asp-action="Details" asp-route-id="@item.IdServiceNavigation.IdService">@item.IdServiceNavigation.ServiceName</a>
+                        </div>
+                    }
+                }
+            </div>
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.IdOrder" class="btn btn-outline-primary">Редагувати</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+</div>

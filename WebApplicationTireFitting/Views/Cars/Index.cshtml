@@ -1,0 +1,53 @@
+﻿@model IEnumerable<WebApplicationTireFitting.Models.Car>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Транспорт</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-secondary">Додати транспорт</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Фото")
+            </th>
+            <th>
+                @Html.DisplayName("Назва")
+            </th>
+            <th>
+                @Html.DisplayName("Власник")
+            </th>
+            <th>
+                @Html.DisplayName("Вид транспорту")
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <img src="@Url.Content(item.PathCarImg)" alt="Avatar" class="avatar">
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Owner)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdTypeOfCarNavigation.TypeOfCar1)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdCar" class="btn btn-outline-primary">Редагувати</a>
+                <a asp-action="Details" asp-route-id="@item.IdCar" class="btn btn-outline-secondary">Детальніше</a>
+                <a asp-action="Delete" asp-route-id="@item.IdCar" class="btn btn-outline-danger">Видалити</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

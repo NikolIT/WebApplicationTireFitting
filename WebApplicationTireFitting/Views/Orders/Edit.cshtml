@@ -1,0 +1,144 @@
+﻿@model WebApplicationTireFitting.Models.Order
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Редагування</h1>
+
+<h4>Замовлення</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdOrder" />
+            <div class="form-group">
+                <label class="control-label">Дата</label>
+                <input asp-for="Date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Клієнт</label>
+                <select asp-for="IdClient" class="form-control" asp-items="ViewBag.IdClient"></select>
+                <span asp-validation-for="IdClient" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Транспорт</label>
+                <select asp-for="IdCar" class="form-control" asp-items="ViewBag.IdCar"></select>
+                <span asp-validation-for="IdCar" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Вартість</label>
+                <input asp-for="Price" class="form-control" maxlength="5" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <label class="control-label">Матеріали</label>
+
+            <div class="prokrutka">
+                @{
+                    bool notMaterials = false;
+
+                    foreach (var p in ViewBag.MaterialsFull)
+                    {
+                        foreach (var a in ViewBag.Materials[0].MaterialsOrders)
+                        {
+                            if (a.IdMaterialsNavigation.IdMaterials == p.IdMaterials)
+                            {
+                                <input name="idMaterials" type="checkbox" value="@p.IdMaterials" checked="checked" /> @p.NameMaterial <br />
+                                notMaterials = false;
+                                break;
+                            }
+                            else
+                            {
+                                notMaterials = true;
+                            }
+                        }
+
+                        if (notMaterials || ViewBag.Materials[0].MaterialsOrders.Count == 0)
+                        {
+                            notMaterials = false;
+                            <input name="idMaterials" type="checkbox" value="@p.IdMaterials" /> @p.NameMaterial <br />
+                        }
+
+                    }
+                }
+            </div>
+
+            <label class="control-label">Працівники</label>
+
+            <div class="prokrutka">
+                @{
+                    bool notWorkers = false;
+
+                    foreach (var p in ViewBag.WorkersFull)
+                    {
+                        foreach (var a in ViewBag.Workers[0].OrderWorkers)
+                        {
+                            if (a.IdWorkerNavigation.IdWorker == p.IdWorker)
+                            {
+                                <input name="idWorkers" type="checkbox" value="@p.IdWorker" checked="checked" /> @p.FullName <br />
+                                notWorkers = false;
+                                break;
+                            }
+                            else
+                            {
+                                notWorkers = true;
+                            }
+                        }
+
+                        if (notWorkers || ViewBag.Workers[0].OrderWorkers.Count == 0)
+                        {
+                            notWorkers = false;
+                            <input name="idWorkers" type="checkbox" value="@p.IdWorker" /> @p.FullName <br />
+                        }
+
+                    }
+                }
+            </div>
+
+            <label class="control-label">Послуги</label>
+
+            <div class="prokrutka">
+                @{
+                    bool notServices = false;
+
+                    foreach (var p in ViewBag.ServicesFull)
+                    {
+                        foreach (var a in ViewBag.Services[0].ServiceOrders)
+                        {
+                            if (a.IdServiceNavigation.IdService == p.IdService)
+                            {
+                                <input name="idServices" type="checkbox" value="@p.IdService" checked="checked" /> @p.ServiceName @p.Price <br />
+                                notServices = false;
+                                break;
+                            }
+                            else
+                            {
+                                notServices = true;
+                            }
+                        }
+
+                        if (notServices || ViewBag.Services[0].ServiceOrders.Count == 0)
+                        {
+                            notServices = false;
+                            <input name="idServices" type="checkbox" value="@p.IdService" /> @p.ServiceName @p.Price <br />
+                        }
+
+                    }
+                }
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Зберегти" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

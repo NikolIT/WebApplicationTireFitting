@@ -1,0 +1,57 @@
+﻿@model WebApplicationTireFitting.Models.Car
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Редагування</h1>
+
+<h4>Транспорт</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdCar" />
+            <input type="hidden" name="PathCarImg" value="@Model.PathCarImg">
+            <div class="form-group">
+                <img src="@Url.Content(Model.PathCarImg)" alt="avatarFull" class="avatarFull">
+            </div>
+            <div class="form-group">
+                <label  class="control-label" maxlength="50">Назва</label>
+                <input asp-for="Name" class="form-control" maxlength="50" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Власник</label>
+                <input asp-for="Owner" class="form-control" maxlength="50" />
+                <span asp-validation-for="Owner" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Клієнт</label>
+                <select asp-for="IdClient" class="form-control" asp-items="ViewBag.IdClient"></select>
+                <span asp-validation-for="IdClient" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Вид транспорту</label>
+                <select asp-for="IdTypeOfCar" class="form-control" asp-items="ViewBag.IdTypeOfCar"></select>
+                <span asp-validation-for="IdTypeOfCar" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Фото</label>
+                <input type="file" name="uploadedFile" accept=".jpg, .jpeg, .png" /><br>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Зберегти" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

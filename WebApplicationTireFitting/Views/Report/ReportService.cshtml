@@ -1,0 +1,335 @@
+﻿@model IEnumerable<WebApplicationTireFitting.Controllers.ReportService>;
+
+<div class="box wide hidden-on-narrow">
+    <div class="box-col">
+        <button id="downloadPDF" class='export-pdf k-button'>Завантажити графік у PDF</button>
+    </div>
+</div>
+
+<div id="content">
+    <h4>Звіт по послугам за @ViewBag.Date</h4>
+    <h4>Графік: популярність послуг</h4>
+    <div id="chartdiv"></div>
+</div>
+
+
+
+<button type="button" class="k-button" id="printGrid">Друкувати таблицю</button>
+
+@(Html.Kendo().Grid(Model)
+        .Name("Grid")
+        .ToolBar(tools => { tools.Pdf().Text("Завантажити у PDF"); })
+        .Pdf(pdf => pdf
+                .AllPages()
+                .AvoidLinks()
+                .PaperSize("A4")
+                .Margin("2cm", "1cm", "1cm", "1cm")
+                .Landscape()
+                .RepeatHeaders()
+                .TemplateId("page-template")
+                .FileName("ReportService.pdf")
+        )
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.ser.ServiceName).Title("Назва");    
+            columns.Bound(p => p.ser.Price).Title("Ціна");
+            columns.Bound(p => p.orderCount).Title("Кількість замовлень").Width(200);
+
+        }).HtmlAttributes(new { style = "height: 550px;" })
+            .Scrollable()
+            .Groupable()
+            .Scrollable(scr => scr.Height(430))
+            .Filterable()
+            .Pageable(pageable => pageable
+                .Refresh(true)
+                .PageSizes(true)
+                .ButtonCount(5))
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .PageSize(20)
+                .ServerOperation(false)
+            )
+)
+<a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+<script type="x/kendo-template" id="page-template">
+    <div class="page-template">
+        <div class="header">
+            <div style="float: left">Звіт по популярності посгуг</div>
+            <div style="float: right">Date: @ViewBag.Date  Page #: pageNum # of #: totalPages #</div>
+        </div>
+        <div class="footer" style = "background-color:white;">
+            Page #: pageNum # of #: totalPages #
+        </div>
+    </div>
+</script>
+
+<script>
+    am4core.ready(function () {
+
+        // Themes begin
+        am4core.useTheme(am4themes_animated);
+        // Themes end
+
+        // Create chart instance
+        var chart = am4core.create("chartdiv", am4charts.XYChart);
+
+        // Add data
+        var data = [
+            @{
+                foreach (var item in Model)
+                {
+                    <text>
+                        {
+                            "country": "@item.ser.ServiceName",
+                            "research": @item.orderCount,
+                        },
+                    </text>
+                }
+            }
+        ];
+
+        chart.data = data;
+        // Create axes
+        var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+        categoryAxis.dataFields.category = "country";
+        categoryAxis.renderer.grid.template.location = 0;
+        categoryAxis.renderer.minGridDistance = 10;
+        categoryAxis.interpolationDuration = 2000;
+
+        var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+
+        // Create series
+        function createSeries(field, name) {
+            var series = chart.series.push(new am4charts.ColumnSeries());
+            series.dataFields.valueX = "research";
+            series.dataFields.categoryY = "country";
+            series.columns.template.tooltipText = "[bold]{valueX}[/]";
+            series.columns.template.cursorOverStyle = am4core.MouseCursorStyle.pointer;
+
+            var hs = series.columns.template.states.create("hover");
+            hs.properties.fillOpacity = 0.7;
+
+            var columnTemplate = series.columns.template;
+            columnTemplate.maxX = 0;
+            columnTemplate.draggable = true;
+
+            columnTemplate.events.on("dragstart", function (ev) {
+                var dataItem = ev.target.dataItem;
+
+                var axislabelItem = categoryAxis.dataItemsByCategory.getKey(
+                    dataItem.categoryY
+                )._label;
+                axislabelItem.isMeasured = false;
+                axislabelItem.minX = axislabelItem.pixelX;
+                axislabelItem.maxX = axislabelItem.pixelX;
+
+                axislabelItem.dragStart(ev.target.interactions.downPointers.getIndex(0));
+                axislabelItem.dragStart(ev.pointer);
+            });
+            columnTemplate.events.on("dragstop", function (ev) {
+                var dataItem = ev.target.dataItem;
+                var axislabelItem = categoryAxis.dataItemsByCategory.getKey(
+                    dataItem.categoryY
+                )._label;
+                axislabelItem.dragStop();
+                handleDragStop(ev);
+            });
+        }
+        createSeries("research", "Research");
+
+        function handleDragStop(ev) {
+            data = [];
+            chart.series.each(function (series) {
+                if (series instanceof am4charts.ColumnSeries) {
+                    series.dataItems.values.sort(compare);
+
+                    var indexes = {};
+                    series.dataItems.each(function (seriesItem, index) {
+                        indexes[seriesItem.categoryY] = index;
+                    });
+
+                    categoryAxis.dataItems.values.sort(function (a, b) {
+                        var ai = indexes[a.category];
+                        var bi = indexes[b.category];
+                        if (ai == bi) {
+                            return 0;
+                        } else if (ai < bi) {
+                            return -1;
+                        } else {
+                            return 1;
+                        }
+                    });
+
+                    var i = 0;
+                    categoryAxis.dataItems.each(function (dataItem) {
+                        dataItem._index = i;
+                        i++;
+                    });
+
+                    categoryAxis.validateDataItems();
+                    series.validateDataItems();
+                }
+            });
+        }
+
+        function compare(a, b) {
+            if (a.column.pixelY < b.column.pixelY) {
+                return 1;
+            }
+            if (a.column.pixelY > b.column.pixelY) {
+                return -1;
+            }
+            return 0;
+        }
+
+    }); // end am4core.ready()
+    // Import DejaVu Sans font for embedding
+
+    // NOTE: Only required if the Kendo UI stylesheets are loaded
+    // from a different origin, e.g. cdn.kendostatic.com
+    kendo.pdf.defineFont({
+        "DejaVu Sans": "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans.ttf",
+        "DejaVu Sans|Bold": "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Bold.ttf",
+        "DejaVu Sans|Bold|Italic": "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Oblique.ttf",
+        "DejaVu Sans|Italic": "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Oblique.ttf",
+        "WebComponentsIcons": "https://kendo.cdn.telerik.com/2017.1.223/styles/fonts/glyphs/WebComponentsIcons.ttf"
+    });
+
+    function printGrid() {
+        var gridElement =
+            printableContent = `
+            <thead>
+				<tr>
+					<th>Назва</th>
+                    <th>Ціна</th>
+                    <th>Кількість замовлень</th>
+				</tr>
+			</thead>
+            <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+					<td>@Html.DisplayFor(modelItem => item.ser.ServiceName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ser.Price)</td>
+                    <td>@Html.DisplayFor(modelItem => item.orderCount)</td>
+				</tr>
+            }`,
+            win = window.open('', '', 'width=800, height=500, resizable=1, scrollbars=1'),
+            doc = win.document.open();
+
+
+        var htmlStart =
+            `
+            <!DOCTYPE html>
+            <html>
+	            <head>
+		        <meta charset="utf-8">
+<style>
+    body {
+        margin: 20px;
+        padding: 0;
+    }
+
+    table {
+        width: 100%; /*Ширина таблицы*/
+        margin-bottom: 18px; /*Отступ снизу от таблицы*/
+        padding: 0; /*Отступы внутри таблицы*/
+        font-size: 13px; /*Размер шрифта*/
+        border: 1px solid #dddddd; /*Граница таблицы*/
+        border-spacing: 0; /*Отступы между границами ячеек*/
+        border-collapse: separate; /*Границы ячеек не склеиваются*/
+        -webkit-border-radius: 5px; /*Радиус скругления углов у таблицы Safari, Chrome*/
+        -moz-border-radius: 5px; /*Радиус скругления углов у таблицы Mozilla*/
+        border-radius: 5px; /*Радиус скругления углов у таблицы*/
+        color: #666666; /*Цвет текста в таблице*/
+        font-family: Arial; /*Семейство шрифтов*/
+    }
+
+        table th, table td {
+            padding: 10px 10px 9px; /*Отступы внутри ячеек*/
+            line-height: 18px; /*Межстрочный интервал*/
+            text-align: left; /*Выравнивание текста по левому краю*/
+        }
+
+        table th {
+            padding-top: 9px; /*Отступы внутри ячеек*/
+            font-weight: bold; /*Установка жирного начертания шрифта*/
+            vertical-align: middle; /*Выравнивание по вертикали. Текст находится по середине*/
+            color: black; /*Черный цвет в ячейках заголовков таблицы*/
+        }
+
+        table td {
+            vertical-align: top; /*Выравнивание содержимого ячейки по верхнему краю*/
+            border-top: 1px solid #ddd; /*Верхняя граница ячейки*/
+        }
+
+            table th + th, table td + td, table th + td {
+                border-left: 1px solid #ddd; /*Стиль для левой границы между двумя ячейками*/
+            }
+
+        table thead tr:first-child th:first-child, /*Первая строка первая ячейка в заголовке таблицы*/
+        table tbody tr:first-child td:first-child /*Первая строка первая ячейка в теле таблицы*/ {
+            -webkit-border-radius: 5px 0 0 0;
+            -moz-border-radius: 5px 0 0 0;
+            border-radius: 5px 0 0 0;
+        }
+
+        table thead tr:first-child th:last-child, /*Первая строка последняя ячейка в заголовке таблицы*/
+        table tbody tr:first-child td:last-child /*Первая строка последняя ячейка в теле таблицы*/ {
+            -webkit-border-radius: 0 5px 0 0;
+            -moz-border-radius: 0 5px 0 0;
+            border-radius: 0 5px 0 0;
+        }
+
+        table tbody tr:last-child td:first-child /*Последняя строка первая ячейка в теле таблицы*/ {
+            -webkit-border-radius: 0 0 0 5px;
+            -moz-border-radius: 0 0 0 5px;
+            border-radius: 0 0 0 5px;
+        }
+
+        table tbody tr:last-child td:last-child /*Последняя строка последняя ячейка в теле таблицы*/ {
+            -webkit-border-radius: 0 0 5px 0;
+            -moz-border-radius: 0 0 5px 0;
+            border-radius: 0 0 5px 0;
+        }
+
+        table tr:hover {
+            background-color: #f2f2f2; /*Цвет строки при наведении курсора мыши*/
+        }
+</style>
+		            <title>Звіт</title>
+	        </head>
+	        <body>
+		        <table>
+
+            `;
+
+        var htmlEnd =
+            `
+                        </tbody>
+                    </table>
+	            </body>
+            </html>`;
+
+
+        doc.write(htmlStart + printableContent + htmlEnd);
+        doc.close();
+        win.print();
+
+    }
+    $('#printGrid').click(function () {
+        printGrid();
+    });
+
+    //скачування PDF графіку
+    $('#downloadPDF').click(function () {
+        domtoimage.toPng(document.getElementById('content'))
+            .then(function (blob) {
+                //var pdf = new jsPDF('p', 'pt', "a4");
+                var pdf = new jsPDF('l', 'pt', [$('#content').width(), $('#content').height()]);
+                pdf.addImage(blob, 'PNG', 0, 0, $('#content').width(), $('#content').height());
+                pdf.save("ReportService.pdf");
+            });
+    });
+</script>
