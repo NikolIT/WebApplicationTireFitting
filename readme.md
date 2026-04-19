@@ -9,3 +9,7 @@
 [Написати листа](mailto:test@gmail.com)
 
 [підтримка](tel:*#*#4636#*#*)
+
+<a href="tel:+380123456789">CLICK HERE TO CALL</a>
+
+<a href="mailto:test@gmail.com">GMAIL</a>
