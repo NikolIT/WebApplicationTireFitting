@@ -7,3 +7,4 @@
 3. [MARKET](market://details?id=com.android.settings)
 4. [CALENDAR](webcal://google.com)
 5. [FACEBOOK](fb://feed)
++380442468110
