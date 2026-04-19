@@ -1,2 +1,2 @@
 # Web Application 
-[Відрити maps](https:google.com/maps/search/restoran)
+[Відрити maps](https://www.google.com/maps?authuser=0)
